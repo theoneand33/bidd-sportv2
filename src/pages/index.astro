@@ -1,3 +1,12 @@
+---
+const cssHref = import.meta.env.PROD ? '/styles.css' : null;
+if (!import.meta.env.PROD) {
+  // In development, import the local Tailwind-processed CSS so HMR works.
+  await import('../styles/global.css');
+}
+// In production the built stylesheet should be available at /styles.css (from your build step).
+// You can reference `cssHref` in the template (e.g. `<link rel="stylesheet" href={cssHref}>`) where appropriate.
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,48 +17,16 @@
     <link rel="manifest" href="manifest.json">
     <!-- Theme color for the browser address bar -->
     <meta name="theme-color" content="#4f46e5">
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.autotable.min.js" onload="window.pdfLibrariesLoaded = true;"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .modal {
-            transition: opacity 0.25s ease;
-        }
-        .modal-content {
-            transition: transform 0.25s ease;
-        }
-        .modal:not([open]) {
-            pointer-events: none;
-            opacity: 0;
-        }
-        .modal:not([open]) .modal-content {
-            transform: scale(0.95);
-        }
-        .loader {
-            border-top-color: #4f46e5; /* indigo-600 */
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        .tab-active {
-            border-color: #4f46e5;
-            color: #4f46e5;
-            background-color: #eef2ff;
-        }
-    </style>
+    <link href="https://api.fonts.coollabs.io/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {cssHref && <link rel="stylesheet" href={cssHref} />}
 </head>
 <body class="bg-slate-100 text-slate-800">
 
-    <!-- 
+    <!--
       Tailwind CSS Safelist:
       This hidden block contains all the dynamically generated color classes for the house themes.
       It ensures that Tailwind's JIT compiler includes these styles in the final CSS.
@@ -82,7 +59,7 @@
             <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24"></div>
             <p id="loading-message" class="mt-4 text-slate-600 text-center">Connecting to database...</p>
         </div>
-        
+
         <!-- Main Content (Hidden until loaded) -->
         <main id="mainContent" class="hidden">
 
@@ -103,7 +80,7 @@
                     <p class="text-slate-500 mt-2">Click the "+ Add Competition" button to get started.</p>
                 </div>
             </div>
-            
+
             <!-- Events View -->
             <div id="eventsView" class="hidden">
                  <div class="mb-4">
@@ -179,7 +156,7 @@
                         </div>
                     </div>
                      <p class="text-slate-500 mb-4 -mt-2">Add participants, edit results, or manage participant details.</p>
-                    
+
                     <!-- Gender Tabs -->
                     <div class="border-b border-gray-200 mb-4">
                         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
@@ -222,9 +199,9 @@
                         </button>
                     </div>
             </div>
-            
+
         </main>
-        
+
         <!-- Public Sign-up View -->
         <div id="signupView" class="hidden">
             <h2 id="signupCompetitionName" class="text-3xl font-bold text-slate-900 mb-2"></h2>
@@ -311,7 +288,7 @@
                     <label for="eventUnits" class="block text-sm font-medium text-slate-700">Units</label>
                     <input type="text" id="eventUnits" name="eventUnits" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" placeholder="e.g., s, m, points" required>
                 </div>
-                
+
                 <div class="space-y-4 mb-6">
                     <div>
                         <h4 class="font-medium text-slate-800">Male Record (Optional)</h4>
@@ -356,7 +333,7 @@
             </form>
         </div>
     </dialog>
-    
+
     <dialog id="editEventModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
         <div class="modal-content bg-white p-6 rounded-lg">
             <h3 class="text-xl font-bold mb-4">Edit Event</h3>
@@ -384,7 +361,7 @@
                     <label for="editEventUnits" class="block text-sm font-medium text-slate-700">Units</label>
                     <input type="text" id="editEventUnits" name="eventUnits" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
                 </div>
-                
+
                 <div class="space-y-4 mb-6">
                     <div>
                         <h4 class="font-medium text-slate-800">Male Record (Optional)</h4>
@@ -494,7 +471,7 @@
             </form>
         </div>
     </dialog>
-    
+
     <dialog id="editResultModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
         <div class="modal-content bg-white p-6 rounded-lg">
             <h3 class="text-xl font-bold mb-4">Enter Result</h3>
@@ -563,7 +540,7 @@
             </div>
         </div>
     </dialog>
-    
+
     <dialog id="shareLinkModal" class="modal p-0 rounded-lg shadow-xl max-w-lg w-full">
         <div class="modal-content bg-white p-6 rounded-lg">
             <h3 class="text-xl font-bold mb-4">Share Link</h3>
@@ -616,11 +593,8 @@
     </dialog>
 
 
-    
-        // =====================================================================================
-        // ======================== END OF SETUP SECTION =======================================
-        // =====================================================================================
 
+<script>
         let app, auth, db;
         let userId;
         let currentMeetId = null;
@@ -638,18 +612,18 @@
         let eventsUnsubscribe = null;
         let resultsUnsubscribe = null;
         let parsedCsvData = null;
-        
+
         const houseColors = {
             'Mason': { bg: 'bg-yellow-200', text: 'text-yellow-800', border: 'border-yellow-400' },
             'Sheppard': { bg: 'bg-green-200', text: 'text-green-800', border: 'border-green-400' },
             'Sumner': { bg: 'bg-red-200', text: 'text-red-800', border: 'border-red-400' },
             'Taylor': { bg: 'bg-blue-200', text: 'text-blue-800', border: 'border-blue-400' }
         };
-        
+
         const loadingEl = document.getElementById('loading');
         const loadingMessage = document.getElementById('loading-message');
         const mainContentEl = document.getElementById('mainContent');
-        
+
         const meetsView = document.getElementById('meetsView');
         const meetsGrid = document.getElementById('meetsGrid');
         const noMeetsMessage = document.getElementById('noMeetsMessage');
@@ -669,7 +643,7 @@
         const addEventForm = document.getElementById('addEventForm');
         const editEventModal = document.getElementById('editEventModal');
         const editEventForm = document.getElementById('editEventForm');
-        
+
         const shareLinkBtn = document.getElementById('shareLinkBtn');
         const shareScorerLinkBtn = document.getElementById('shareScorerLinkBtn');
         const shareLinkModal = document.getElementById('shareLinkModal');
@@ -702,7 +676,7 @@
         const addParticipantBtn = document.getElementById('addParticipantBtn');
         const addParticipantModal = document.getElementById('addParticipantModal');
         const addParticipantForm = document.getElementById('addParticipantForm');
-        
+
         const editParticipantModal = document.getElementById('editParticipantModal');
         const editParticipantForm = document.getElementById('editParticipantForm');
         const editParticipantIdInput = document.getElementById('editParticipantId');
@@ -769,7 +743,7 @@
             meets.forEach(meet => {
                 const card = document.createElement('div');
                 card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow relative';
-                
+
                 const cardContent = document.createElement('div');
                 cardContent.className = 'cursor-pointer';
                 cardContent.innerHTML = `<h3 class="text-xl font-bold text-slate-800 truncate">${meet.name}</h3>`;
@@ -826,7 +800,7 @@
                 addMeetModal.close();
              }).catch(err => console.error("Error adding meet:", err));
         });
-        
+
         async function handleUpdateMeet(e) {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -844,13 +818,13 @@
                 console.error("Error updating meet:", error);
             }
         }
-        
+
         // --- EVENT FUNCTIONS ---
         let allEvents = [];
         function renderEvents(events) {
             eventsGrid.innerHTML = '';
             noEventsMessage.classList.toggle('hidden', events.length > 0);
-            
+
             const groupedEvents = events.reduce((acc, event) => {
                 const category = event.category || 'Other';
                 if (!acc[category]) {
@@ -867,11 +841,11 @@
                 groupContainer.innerHTML = `<h3 class="text-xl font-semibold text-slate-600 mb-2 border-b pb-2">${category}</h3>`;
                 const grid = document.createElement('div');
                 grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-                
+
                 groupedEvents[category].forEach(event => {
                     const card = document.createElement('div');
                     card.className = 'bg-white p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow relative';
-                    
+
                     const cardContent = document.createElement('div');
                     cardContent.className = 'cursor-pointer';
                     cardContent.innerHTML = `<h3 class="text-xl font-bold text-slate-800 truncate">${event.name}</h3><p class="text-slate-500 capitalize">${event.ageGroup}</p>`;
@@ -882,10 +856,10 @@
                         currentSortOrder = 'placing';
                         currentGenderView = 'Male';
                         updateTabs();
-                        
+
                         resultsEventName.textContent = event.name;
                         resultsEventInfo.textContent = `Results in ${event.units}.`;
-                        
+
                         let maleRecordText = 'Male Record: Not set';
                         if (event.maleRecord) {
                             const formattedRecord = isTimeBased(event.eventType) ? formatTime(event.maleRecord) + 's' : event.maleRecord + (event.units || '');
@@ -919,7 +893,7 @@
                             editEventForm.elements.eventId.value = event.id;
                             editEventForm.elements.eventName.value = event.name;
                             editEventForm.elements.eventType.value = event.eventType;
-                            
+
                             const ageGroupSelect = editEventForm.elements.ageGroup;
                             ageGroupSelect.innerHTML = '';
                             currentMeet.ageGroups.forEach(ag => {
@@ -939,7 +913,7 @@
                         });
                          card.appendChild(editBtn);
                     }
-                    
+
                     card.appendChild(cardContent);
                     grid.appendChild(card);
                 });
@@ -962,9 +936,9 @@
             e.preventDefault();
             if(!currentMeetId) return;
             const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events');
-            const dataBuilder = fd => ({ 
-                name: fd.get('eventName'), 
-                eventType: fd.get('eventType'), 
+            const dataBuilder = fd => ({
+                name: fd.get('eventName'),
+                eventType: fd.get('eventType'),
                 ageGroup: fd.get('ageGroup'),
                 category: fd.get('category'),
                 units: fd.get('eventUnits'),
@@ -977,7 +951,7 @@
             });
             handleFormSubmit(e, addEventModal, collectionRef, dataBuilder);
         });
-        
+
         async function handleUpdateEvent(e) {
             e.preventDefault();
             if(!currentMeetId) return;
@@ -1008,17 +982,17 @@
         // --- PARTICIPANT/RESULT FUNCTIONS ---
         function renderParticipants(participants, event) {
             currentParticipants = participants;
-            
+
             const participantsOfGender = participants.filter(p => p.gender === currentGenderView);
-            
+
             const eventType = event.eventType;
             const eventRecord = currentGenderView === 'Male' ? event.maleRecord : event.femaleRecord;
-            
+
             const withResults = participantsOfGender.filter(p => p.result !== null && p.result !== undefined);
             const withoutResults = participantsOfGender.filter(p => p.result === null || p.result === undefined);
-            
+
             withResults.sort((a, b) => isTimeBased(eventType) ? a.result - b.result : b.result - a.result);
-            
+
             if (withResults.length > 0) {
                  withResults.forEach(p => p.isRecord = false);
                 const topResult = withResults[0].result;
@@ -1050,7 +1024,7 @@
             const hasParticipants = participantsOfGender.length > 0;
             noParticipantsMessage.classList.toggle('hidden', hasParticipants);
             resultsContainer.querySelector('table').classList.toggle('hidden', !hasParticipants);
-            
+
             displayList.forEach(p => {
                 const row = createParticipantRow(p, p.placing || '-', eventType);
                 resultsTableBody.appendChild(row);
@@ -1061,14 +1035,14 @@
             row.className = 'border-b border-slate-200 hover:bg-slate-50';
             const hasResult = participant.result !== null && participant.result !== undefined;
             let displayResult = hasResult ? (isTimeBased(eventType) ? formatTime(participant.result) : participant.result) : 'N/A';
-            
+
             if (participant.isRecord) {
                 displayResult += ` <span class="ml-2 text-amber-500 font-bold">🏆 New Record!</span>`;
             }
 
             const houseColor = houseColors[participant.houseGroup] || { bg: 'bg-gray-200', text: 'text-gray-800' };
             const houseBadge = `<span class="px-2 py-1 text-xs font-semibold leading-tight rounded-full ${houseColor.bg} ${houseColor.text}">${participant.houseGroup}</span>`;
-            
+
             const participationCheckbox = `
                 <td class="p-3 text-center">
                     <input type="checkbox" data-id="${participant.id}" class="participation-check h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" ${participant.participated ? 'checked' : ''}>
@@ -1076,10 +1050,10 @@
             `;
 
             row.innerHTML = `<td class="p-3 font-medium">${rank}</td><td class="p-3">${participant.athleteName}</td><td class="p-3">${houseBadge}</td>${participationCheckbox}<td class="p-3">${displayResult}</td><td class="p-3"></td>`;
-            
+
             const actionsCell = row.cells[5];
             actionsCell.className = 'p-3 flex items-center gap-2';
-            
+
             const resultButton = document.createElement('button');
             resultButton.textContent = hasResult ? 'Edit Result' : 'Add Result';
             resultButton.className = hasResult ? 'bg-yellow-500 text-white font-semibold px-3 py-1 text-sm rounded-md shadow hover:bg-yellow-600 transition' : 'bg-indigo-500 text-white font-semibold px-3 py-1 text-sm rounded-md shadow hover:bg-indigo-600 transition';
@@ -1140,13 +1114,13 @@
             e.preventDefault();
             if(!currentMeetId || !currentEventId) return;
             const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events', currentEventId, 'results');
-            const dataBuilder = fd => ({ 
-                athleteName: fd.get('athleteName'), 
-                houseGroup: fd.get('houseGroup'), 
+            const dataBuilder = fd => ({
+                athleteName: fd.get('athleteName'),
+                houseGroup: fd.get('houseGroup'),
                 gender: fd.get('gender'),
-                result: null, 
-                participated: false, 
-                createdAt: new Date() 
+                result: null,
+                participated: false,
+                createdAt: new Date()
             });
             handleFormSubmit(e, addParticipantModal, collectionRef, dataBuilder);
         });
@@ -1173,7 +1147,7 @@
             if (!currentMeetId || !currentEventId || !participantId) return;
             try {
                 const participantDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events', currentEventId, 'results', participantId);
-                await updateDoc(participantDocRef, { 
+                await updateDoc(participantDocRef, {
                     athleteName: newName,
                     houseGroup: newHouse,
                     gender: newGender
@@ -1184,7 +1158,7 @@
                 console.error("Error updating participant:", error);
             }
         }
-        
+
         async function handleClearResult(participantId) {
             if (!currentMeetId || !currentEventId || !participantId) return;
             try {
@@ -1220,7 +1194,7 @@
                 const resultsSnapshot = await getDocs(resultsColRef);
                 const participants = resultsSnapshot.docs.map(d => ({id: d.id, ...d.data()}));
                 const withResults = participants.filter(p => p.result !== null && p.result !== undefined);
-                
+
                 if (withResults.length > 0) {
                     withResults.sort((a, b) => isTimeBased(currentEvent.eventType) ? a.result - b.result : b.result - a.result);
                     const topResult = withResults[0].result;
@@ -1230,7 +1204,7 @@
                     const eventRecord = gender === 'Male' ? currentEvent.maleRecord : currentEvent.femaleRecord;
 
                     const isNewRecord = (eventRecord !== null && ((isTimeBased(currentEvent.eventType) && topResult < eventRecord) || (!isTimeBased(currentEvent.eventType) && topResult > eventRecord))) || (eventRecord === null && topResult !== null);
-                    
+
                     if (isNewRecord) {
                         if (gender === 'Male') {
                            await updateDoc(eventDocRef, { maleRecord: topResult, maleRecordHolder: recordBreaker.athleteName, maleRecordYear: new Date().getFullYear() });
@@ -1246,7 +1220,7 @@
                 console.error("Error updating result:", error);
             }
         }
-        
+
         async function handleDelete() {
             if (!deleteContext || !currentMeetId) return;
             const { type, id } = deleteContext;
@@ -1325,14 +1299,14 @@
                     const genderColumn = csvGenderSelect.value;
                     const ageGroupColumn = csvAgeGroupSelect.value;
                     const houseColumn = csvHouseGroupSelect.value;
-                    
+
                     if (!firstNameColumn || !surnameColumn || !houseColumn || !genderColumn || !ageGroupColumn) {
                         alert("Please map all columns: First Name, Surname, Gender, Age Group, and Team/House.");
                         importBtn.disabled = false;
                         importBtn.textContent = 'Confirm & Import';
                         return;
                     }
-                    
+
                     const eventsSnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events'));
                     const eventsByAgeGroup = {};
                     eventsSnapshot.docs.forEach(doc => {
@@ -1355,7 +1329,7 @@
                             const athleteName = `${firstName.trim()} ${surname.trim()}`;
                             const gender = genderRaw.trim().toLowerCase().startsWith('m') ? 'Male' : 'Female';
                             const matchingEventIds = eventsByAgeGroup[ageGroup.trim()] || [];
-                            
+
                             for (const eventId of matchingEventIds) {
                                 const resultsCol = collection(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events', eventId, 'results');
                                 batch.set(doc(resultsCol), { athleteName, houseGroup: houseGroup.trim(), gender: gender, result: null, participated: false, createdAt: new Date() });
@@ -1365,7 +1339,7 @@
                     }
                     await batch.commit();
                     alert(`${count} participants processed and added to matching events!`);
-                } 
+                }
                 csvUploadModal.close();
                 parsedCsvData = null;
             } catch (error) {
@@ -1388,7 +1362,7 @@
                 const event = eventDoc.data();
                 const resultsSnapshot = await getDocs(collection(eventDoc.ref, 'results'));
                 const participants = resultsSnapshot.docs.map(d => d.data());
-                
+
                 participants.forEach(p => {
                     if ((p.participated || (p.result !== null && p.result !== undefined)) && housePoints.hasOwnProperty(p.houseGroup)) {
                         housePoints[p.houseGroup] += participationPoint;
@@ -1397,7 +1371,7 @@
 
                 const withResults = participants.filter(p => p.result !== null && p.result !== undefined);
                 if(withResults.length === 0) continue;
-                
+
                 // Process each gender separately for placings
                 ['Male', 'Female'].forEach(gender => {
                     const genderResults = withResults.filter(p => p.gender === gender);
@@ -1439,20 +1413,20 @@
                 `;
             }).join('');
         }
-        
+
         // --- PDF Generation ---
         function generateResultsPdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.text(`Results for: ${currentEventName} (${currentGenderView})`, 14, 16);
             doc.text(`Competition: ${currentMeetName}`, 14, 22);
-            
+
             const tableData = [];
             const rows = resultsTableBody.querySelectorAll('tr');
             rows.forEach(row => {
                 const rowData = [];
                 row.querySelectorAll('td').forEach((cell, index) => {
-                    if (index < 5) { 
+                    if (index < 5) {
                         if (index === 3) { // Participation column
                            rowData.push(cell.querySelector('input').checked ? 'Yes' : 'No');
                         } else {
@@ -1476,7 +1450,7 @@
             const doc = new jsPDF();
             doc.text(`Qualifiers for: ${currentEventName}`, 14, 16);
             doc.text(`Competition: ${currentMeetName}`, 14, 22);
-            
+
             let tableData = [];
             let startY = 30;
 
@@ -1485,7 +1459,7 @@
                 const withResults = participantsOfGender.filter(p => p.result !== null && p.result !== undefined);
                 if(withResults.length > 0) {
                      withResults.sort((a, b) => isTimeBased(currentEvent.eventType) ? a.result - b.result : b.result - a.result);
-                     
+
                      if (withResults.length > 0) {
                         withResults[0].placing = 1;
                         for (let i = 1; i < withResults.length; i++) {
@@ -1510,10 +1484,10 @@
                      }
                 }
             });
-            
+
             doc.save(`qualifiers_${currentEventName.replace(/ /g, '_')}.pdf`);
         }
-        
+
         function generateHousePointsPdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1535,7 +1509,7 @@
             });
             doc.save(`house_points_${currentMeetName.replace(/ /g, '_')}.pdf`);
         }
-        
+
         // --- SIGN UP PAGE ---
         async function fetchAndRenderSignupPage(meetId) {
             loadingEl.classList.add('hidden');
@@ -1558,7 +1532,7 @@
                  noSignupEventsMessage.classList.remove('hidden');
             }
         }
-        
+
         function renderSignupEvents(events) {
             signupEventsGrid.innerHTML = '';
             noSignupEventsMessage.classList.toggle('hidden', events.length > 0);
@@ -1584,7 +1558,7 @@
                 });
             });
         }
-        
+
         async function handlePublicSignup(e) {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -1592,9 +1566,9 @@
             const participantName = formData.get('signupName').trim();
             const houseGroup = formData.get('signupHouse');
             const gender = formData.get('signupGender');
-            
+
             const resultsCol = collection(db, 'artifacts', appId, 'public', 'data', 'meets', currentMeetId, 'events', eventId, 'results');
-            
+
             // Check for duplicates
             const q = query(resultsCol, where("athleteName", "==", participantName));
             const querySnapshot = await getDocs(q);
@@ -1632,7 +1606,7 @@
         editParticipantForm.addEventListener('submit', handleUpdateParticipant);
         editEventForm.addEventListener('submit', handleUpdateEvent);
         publicSignupForm.addEventListener('submit', handlePublicSignup);
-        
+
         backToMeetsBtn.addEventListener('click', () => {
              if (eventsUnsubscribe) { eventsUnsubscribe(); eventsUnsubscribe = null; }
             currentMeetId = null;
@@ -1680,11 +1654,11 @@
         });
 
         confirmDeleteBtn.addEventListener('click', handleDelete);
-        uploadCsvBtn.addEventListener('click', () => { 
+        uploadCsvBtn.addEventListener('click', () => {
             deleteContext = { type: 'csv-single' };
             csvFileInput.click();
         });
-        uploadCsvEventsBtn.addEventListener('click', () => { 
+        uploadCsvEventsBtn.addEventListener('click', () => {
             deleteContext = { type: 'csv-all' };
             csvFileInput.click();
         });
@@ -1692,16 +1666,16 @@
         csvFileInput.addEventListener('change', handleFileSelect);
         confirmCsvImport.addEventListener('click', handleConfirmCsvImport);
         document.querySelectorAll('.cancel-btn').forEach(btn => btn.addEventListener('click', () => btn.closest('dialog').close()));
-        
+
         printHousePointsBtn.addEventListener('click', generateHousePointsPdf);
         printResultsBtn.addEventListener('click', generateResultsPdf);
         printQualifiersBtn.addEventListener('click', generateQualifiersPdf);
-        
+
         sortByNameBtn.addEventListener('click', () => {
             currentSortOrder = currentSortOrder === 'placing' ? 'alphabetical' : 'placing';
             renderParticipants(currentParticipants, currentEvent);
         });
-        
+
         eventSearchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const filteredEvents = allEvents.filter(event => event.name.toLowerCase().includes(searchTerm));
@@ -1737,7 +1711,7 @@
             printQualifiersBtn.disabled = false;
             printQualifiersBtn.textContent = 'Export Qualifiers';
         }
-        
+
         function setupScorerMode() {
             isScorerMode = true;
             document.getElementById('addMeetBtn').classList.add('hidden');
@@ -1775,7 +1749,7 @@
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                
+
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
@@ -1810,7 +1784,7 @@
                 loadingEl.querySelector('.loader').classList.add('hidden');
             }
         }
-        
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js').then(reg => {
@@ -1825,6 +1799,3 @@
     </script>
 </body>
 </html>
-
-
-

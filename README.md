@@ -1,25 +1,43 @@
-# bidd-sportv2
+# Astro Starter Kit: Minimal
 
-Here’s a summary of the key features in Bidd Sports v2:
+```sh
+bun create astro@latest -- --template minimal
+```
 
-Intuitive Workflow: The app is now organized into a clear hierarchy: Competitions -> Events -> Results.
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-Custom Competitions: You can create and edit competitions, each with its own custom list of Age Groups (e.g., U10, U12, Senior).
+## 🚀 Project Structure
 
-Flexible Events: When creating an event, you can assign it an Age Group from your custom list, a Category (e.g., Track, Field, Swimming) for better organization, and an Event Type (Time, Distance, or Points).
+Inside of your Astro project, you'll see the following folders and files:
 
-Gender-Specific Records & Results: The app tracks records and results separately for Male and Female participants. The results table is now tabbed for each gender.
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
 
-Reliable CSV Import: The CSV import function has been simplified to a per-event basis to ensure it is robust and reliable. You can easily map your file's columns to the required fields.
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-Full Edit/Delete Capabilities: You can edit or delete competitions, events, and individual participants.
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-Comprehensive Reporting: The PDF export functions have been fixed and now include:
+Any static assets, like images, can be placed in the `public/` directory.
 
-Full Results: A complete list of results for an event.
+## 🧞 Commands
 
-Qualifiers Report: A clean report of only the 1st, 2nd, and 3rd place finishers for both genders.
+All commands are run from the root of the project, from a terminal:
 
-Team Points Summary: A report of the overall team standings.
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `bun install`             | Installs dependencies                            |
+| `bun dev`             | Starts local dev server at `localhost:4321`      |
+| `bun build`           | Build your production site to `./dist/`          |
+| `bun preview`         | Preview your build locally, before deploying     |
+| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `bun astro -- --help` | Get help using the Astro CLI                     |
 
-Robust Offline Mode: The app's offline capabilities have been enhanced to ensure it works reliably on any device, even with a spotty internet connection.
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
