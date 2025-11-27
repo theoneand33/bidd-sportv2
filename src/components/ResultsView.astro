@@ -1,0 +1,97 @@
+---
+/*
+  ResultsView.astro
+  Presentational Astro component for the "Results" view extracted from index.astro.
+
+  Notes:
+  - Preserves DOM IDs used by the existing client-side script so behavior continues to work without JS changes.
+  - Props:
+    - eventName (string) : optional text to display in the header (script updates titles dynamically)
+  - This is intentionally a static/presentational component — client-side logic manipulates these elements by ID.
+*/
+const { eventName = '' } = Astro.props;
+---
+<div id="resultsView" class="hidden">
+  <div class="mb-4">
+    <button id="backToEventsBtn" class="text-indigo-600 hover:text-indigo-800 font-medium transition duration-200">
+      &larr; Back to Events
+    </button>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-4">
+      <div>
+        <h2 id="resultsEventName" class="text-3xl font-bold text-slate-900">{eventName}</h2>
+        <div class="text-slate-500 space-y-1 mt-1">
+          <p id="resultsEventInfo"></p>
+          <p id="resultsMaleRecordInfo"></p>
+          <p id="resultsFemaleRecordInfo"></p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 flex-wrap justify-end">
+        <button id="printQualifiersBtn" class="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-green-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+          Loading...
+        </button>
+        <button id="printResultsBtn" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+          Loading...
+        </button>
+
+        <!-- CSV upload controls -->
+        <input type="file" id="csvFileInput" class="hidden" accept=".csv">
+        <button id="uploadCsvBtn" class="bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-gray-700 transition duration-200">
+          Upload CSV
+        </button>
+
+        <button id="addParticipantBtn" class="bg-teal-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-teal-700 transition duration-200">
+          + Add Participant
+        </button>
+      </div>
+    </div>
+
+    <p class="text-slate-500 mb-4 -mt-2">Add participants, edit results, or manage participant details.</p>
+
+    <!-- Gender Tabs -->
+    <div class="border-b border-gray-200 mb-4">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <button id="maleTab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Male</button>
+        <button id="femaleTab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Female</button>
+      </nav>
+    </div>
+
+    <div id="resultsContainer" class="overflow-x-auto">
+      <table class="w-full text-left min-w-[600px]">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="p-3 font-semibold text-sm text-slate-600">Placing</th>
+            <th class="p-3 font-semibold text-sm">
+              <button id="sortByNameBtn" class="flex items-center gap-1 text-slate-600 hover:text-indigo-600 transition-colors">
+                Participant Name
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 12l-4-4m4 4l4-4m6-4v12m0-12l4 4m-4-4l-4 4" />
+                </svg>
+              </button>
+            </th>
+            <th class="p-3 font-semibold text-sm text-slate-600">Team/House</th>
+            <th class="p-3 font-semibold text-sm text-slate-600">Participated</th>
+            <th class="p-3 font-semibold text-sm text-slate-600">Result</th>
+            <th class="p-3 font-semibold text-sm text-slate-600">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+          <!-- Results will be inserted here by client-side script -->
+        </tbody>
+      </table>
+
+      <div id="noParticipantsMessage" class="hidden text-center py-12">
+        <p class="text-slate-500">No participants have been added for this gender.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex justify-end">
+    <button id="deleteEventBtn" class="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-200">
+      Delete Event
+    </button>
+  </div>
+</div>

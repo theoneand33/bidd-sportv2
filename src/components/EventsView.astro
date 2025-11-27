@@ -1,0 +1,62 @@
+---
+/*
+  EventsView.astro
+  Presentational Astro component for the "Events" admin view extracted from index.astro.
+
+  Notes:
+  - Preserves DOM IDs used by the existing client-side script so behavior continues to work without JS changes.
+  - Props:
+    - meetName (string) : optional text to display in titles (defaults to empty; script updates titles when a meet is selected)
+    - eventsTitleText (string) : label for the events section title
+    - housePointsLabel (string) : label for the house points section title
+  - This component intentionally does not include any client-side interactivity. The original script manipulates elements by ID.
+*/
+const {
+  meetName = '',
+  eventsTitleText = 'Events',
+  housePointsLabel = 'Team Points'
+} = Astro.props;
+---
+<div id="eventsView" class="hidden">
+  <div class="mb-4">
+    <button id="backToMeetsBtn" class="text-indigo-600 hover:text-indigo-800 font-medium transition duration-200">
+      &larr; Back to Competitions
+    </button>
+  </div>
+
+  <div id="housePointsContainer" class="mb-8 bg-white p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between items-center mb-2">
+      <h2 id="housePointsTitle" class="text-2xl font-semibold text-slate-800">{housePointsLabel}{meetName ? `: ${meetName}` : ''}</h2>
+      <button id="printHousePointsBtn" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+        Loading...
+      </button>
+    </div>
+    <p class="text-sm text-slate-500 mb-4">Placing: 1st (5), 2nd (3), 3rd (1). Participation: 1 point per participant with a result or checkbox ticked.</p>
+    <ol id="housePointsList" class="space-y-4">
+      <!-- House points will be dynamically inserted here -->
+    </ol>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <h2 id="eventsTitle" class="text-2xl font-semibold text-slate-800">{eventsTitleText}{meetName ? `: ${meetName}` : ''}</h2>
+    <div class="flex gap-2">
+      <button id="shareLinkBtn" class="bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-gray-700 transition duration-200">
+        Share Sign-up Link
+      </button>
+      <button id="addEventBtn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition duration-200">
+        + Add Event
+      </button>
+    </div>
+  </div>
+
+  <p class="text-slate-500 mb-4 -mt-2">Click on an event to view results, or add a new event for this competition.</p>
+
+  <div id="eventsContainer" class="space-y-6">
+    <!-- Event groups will be inserted here by client-side script -->
+  </div>
+
+  <div id="noEventsMessage" class="hidden text-center py-16 bg-white rounded-lg shadow-sm">
+    <h3 class="text-xl font-medium text-slate-700">No events yet!</h3>
+    <p class="text-slate-500 mt-2">Click the "+ Add Event" button to get started.</p>
+  </div>
+</div>

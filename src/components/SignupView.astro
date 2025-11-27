@@ -1,0 +1,78 @@
+---
+/*
+  SignupView.astro
+  Presentational component for the public sign-up view and sign-up modal.
+
+  Notes:
+  - Preserves DOM IDs used by the existing client-side script so behavior continues to work without JS changes.
+  - Props:
+    - competitionName (string) : initial competition name shown on the sign-up view (script updates when needed)
+    - noEventsTitle (string)   : title text for the "no events" state
+    - noEventsMessage (string) : message text for the "no events" state
+  - This component is intentionally static/presentational: client-side logic manipulates elements by ID.
+*/
+const {
+  competitionName = '',
+  noEventsTitle = 'No events available for sign-up.',
+  noEventsMessage = 'Please check back later or contact the event organizer.'
+} = Astro.props;
+---
+<div id="signupView" class="hidden">
+  <h2 id="signupCompetitionName" class="text-3xl font-bold text-slate-900 mb-2">{competitionName}</h2>
+  <p class="text-slate-500 mb-6">Select an event to sign up for.</p>
+
+  <div id="signupEventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Sign-up event cards will be inserted here by client-side script -->
+  </div>
+
+  <div id="noSignupEventsMessage" class="hidden text-center py-16 bg-white rounded-lg shadow-sm">
+    <h3 class="text-xl font-medium text-slate-700">{noEventsTitle}</h3>
+    <p class="text-slate-500 mt-2">{noEventsMessage}</p>
+  </div>
+</div>
+
+<!-- Public Sign-up Modal -->
+<dialog id="publicSignupModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <div id="signupFormContainer">
+      <h3 id="signupEventName" class="text-xl font-bold mb-4">Sign Up</h3>
+
+      <form id="publicSignupForm" class="space-y-4">
+        <input type="hidden" id="signupEventId" name="eventId">
+
+        <div class="mb-4">
+          <label for="signupName" class="block text-sm font-medium text-slate-700">Full Name</label>
+          <input type="text" id="signupName" name="signupName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="signupGender" class="block text-sm font-medium text-slate-700">Gender</label>
+          <select id="signupGender" name="signupGender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label for="signupHouse" class="block text-sm font-medium text-slate-700">Team / House</label>
+          <select id="signupHouse" name="signupHouse" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+            <option value="Mason">Mason</option>
+            <option value="Sheppard">Sheppard</option>
+            <option value="Sumner">Sumner</option>
+            <option value="Taylor">Taylor</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+          <button type="submit" class="bg-teal-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-teal-700 transition">Sign Up</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="signupMessageContainer" class="hidden text-center">
+      <p id="signupMessage" class="text-lg font-medium text-slate-800"></p>
+      <button type="button" class="cancel-btn mt-4 bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Close</button>
+    </div>
+  </div>
+</dialog>

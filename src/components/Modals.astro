@@ -1,0 +1,359 @@
+---
+/*
+  Modals.astro
+  Contains the remaining dialogs/modals extracted from the original page.
+
+  Notes:
+  - Keeps the same DOM `id` attributes so the existing client-side script continues to work without changes.
+  - This is a purely presentational Astro component (no client-side framework integration).
+  - The `publicSignupModal` was placed in `SignupView.astro` to keep logical grouping; this file contains the rest.
+*/
+---
+<!-- Add Meet Modal -->
+<dialog id="addMeetModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Add New Competition</h3>
+    <form id="addMeetForm">
+      <div class="mb-4">
+        <label for="meetName" class="block text-sm font-medium text-slate-700">Competition Name</label>
+        <input type="text" id="meetName" name="meetName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" placeholder="e.g., Annual Sports Day 2025" required>
+      </div>
+      <div class="mb-6">
+        <label for="ageGroups" class="block text-sm font-medium text-slate-700">Age Groups (one per line)</label>
+        <textarea id="ageGroups" name="ageGroups" rows="4" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" placeholder="U10&#10;U12&#10;U14&#10;Senior"></textarea>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Create Competition</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Edit Meet Modal -->
+<dialog id="editMeetModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Edit Competition</h3>
+    <form id="editMeetForm">
+      <input type="hidden" id="editMeetId" name="meetId">
+      <div class="mb-4">
+        <label for="editMeetName" class="block text-sm font-medium text-slate-700">Competition Name</label>
+        <input type="text" id="editMeetName" name="meetName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+      <div class="mb-6">
+        <label for="editAgeGroups" class="block text-sm font-medium text-slate-700">Age Groups (one per line)</label>
+        <textarea id="editAgeGroups" name="ageGroups" rows="4" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></textarea>
+      </div>
+      <div class="flex justify-between items-center">
+        <button type="button" id="deleteMeetBtn" class="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition">Delete</button>
+        <div class="flex gap-3">
+          <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+          <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Add Event Modal -->
+<dialog id="addEventModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Add New Event</h3>
+    <form id="addEventForm">
+      <div class="mb-4">
+        <label for="eventName" class="block text-sm font-medium text-slate-700">Event Name</label>
+        <input type="text" id="eventName" name="eventName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" placeholder="e.g., 100m Sprint" required>
+      </div>
+      <div class="mb-4">
+        <label for="eventType" class="block text-sm font-medium text-slate-700">Event Type</label>
+        <select id="eventType" name="eventType" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Time">Time (Lowest score wins)</option>
+          <option value="Distance">Distance (Highest score wins)</option>
+          <option value="Points">Points (Highest score wins)</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="ageGroup" class="block text-sm font-medium text-slate-700">Age Group</label>
+        <select id="ageGroup" name="ageGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <!-- Options will be populated dynamically -->
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="eventUnits" class="block text-sm font-medium text-slate-700">Units</label>
+        <input type="text" id="eventUnits" name="eventUnits" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" placeholder="e.g., s, m, points" required>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <h4 class="font-medium text-slate-800">Male Record (Optional)</h4>
+          <div class="grid grid-cols-3 gap-4 mt-2">
+            <div class="col-span-1">
+              <label for="maleEventRecord" class="block text-sm text-slate-600">Record</label>
+              <input type="number" step="any" id="maleEventRecord" name="maleEventRecord" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-2">
+              <label for="maleRecordHolder" class="block text-sm text-slate-600">Holder</label>
+              <input type="text" id="maleRecordHolder" name="maleRecordHolder" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-1">
+              <label for="maleRecordYear" class="block text-sm text-slate-600">Year</label>
+              <input type="number" id="maleRecordYear" name="maleRecordYear" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-slate-800">Female Record (Optional)</h4>
+          <div class="grid grid-cols-3 gap-4 mt-2">
+            <div class="col-span-1">
+              <label for="femaleEventRecord" class="block text-sm text-slate-600">Record</label>
+              <input type="number" step="any" id="femaleEventRecord" name="femaleEventRecord" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-2">
+              <label for="femaleRecordHolder" class="block text-sm text-slate-600">Holder</label>
+              <input type="text" id="femaleRecordHolder" name="femaleRecordHolder" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-1">
+              <label for="femaleRecordYear" class="block text-sm text-slate-600">Year</label>
+              <input type="number" id="femaleRecordYear" name="femaleRecordYear" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Create Event</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Edit Event Modal -->
+<dialog id="editEventModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Edit Event</h3>
+    <form id="editEventForm">
+      <input type="hidden" id="editEventId" name="eventId">
+      <div class="mb-4">
+        <label for="editEventName" class="block text-sm font-medium text-slate-700">Event Name</label>
+        <input type="text" id="editEventName" name="eventName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+      <div class="mb-4">
+        <label for="editEventType" class="block text-sm font-medium text-slate-700">Event Type</label>
+        <select id="editEventType" name="eventType" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Time">Time (Lowest score wins)</option>
+          <option value="Distance">Distance (Highest score wins)</option>
+          <option value="Points">Points (Highest score wins)</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="editAgeGroup" class="block text-sm font-medium text-slate-700">Age Group</label>
+        <select id="editAgeGroup" name="ageGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <!-- Options will be populated dynamically -->
+        </select>
+      </div>
+      <div class="mb-4">
+        <label for="editEventUnits" class="block text-sm font-medium text-slate-700">Units</label>
+        <input type="text" id="editEventUnits" name="eventUnits" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <h4 class="font-medium text-slate-800">Male Record (Optional)</h4>
+          <div class="grid grid-cols-3 gap-4 mt-2">
+            <div class="col-span-1">
+              <label for="editMaleEventRecord" class="block text-sm text-slate-600">Record</label>
+              <input type="number" step="any" id="editMaleEventRecord" name="maleEventRecord" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-2">
+              <label for="editMaleRecordHolder" class="block text-sm text-slate-600">Holder</label>
+              <input type="text" id="editMaleRecordHolder" name="maleRecordHolder" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-1">
+              <label for="editMaleRecordYear" class="block text-sm text-slate-600">Year</label>
+              <input type="number" id="editMaleRecordYear" name="maleRecordYear" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-medium text-slate-800">Female Record (Optional)</h4>
+          <div class="grid grid-cols-3 gap-4 mt-2">
+            <div class="col-span-1">
+              <label for="editFemaleEventRecord" class="block text-sm text-slate-600">Record</label>
+              <input type="number" step="any" id="editFemaleEventRecord" name="femaleEventRecord" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-2">
+              <label for="editFemaleRecordHolder" class="block text-sm text-slate-600">Holder</label>
+              <input type="text" id="editFemaleRecordHolder" name="femaleRecordHolder" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+            <div class="col-span-1">
+              <label for="editFemaleRecordYear" class="block text-sm text-slate-600">Year</label>
+              <input type="number" id="editFemaleRecordYear" name="femaleRecordYear" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Add Participant Modal -->
+<dialog id="addParticipantModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Add Participant</h3>
+    <form id="addParticipantForm">
+      <div class="mb-4">
+        <label for="athleteName" class="block text-sm font-medium text-slate-700">Participant Name</label>
+        <input type="text" id="athleteName" name="athleteName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+      <div class="mb-4">
+        <label for="gender" class="block text-sm font-medium text-slate-700">Gender</label>
+        <select id="gender" name="gender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="houseGroup" class="block text-sm font-medium text-slate-700">Team / House</label>
+        <select id="houseGroup" name="houseGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Mason">Mason</option>
+          <option value="Sheppard">Sheppard</option>
+          <option value="Sumner">Sumner</option>
+          <option value="Taylor">Taylor</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-teal-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-teal-700 transition">Add Participant</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Edit Participant Modal -->
+<dialog id="editParticipantModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Edit Participant</h3>
+    <form id="editParticipantForm">
+      <input type="hidden" id="editParticipantId" name="participantId">
+      <div class="mb-4">
+        <label for="editAthleteName" class="block text-sm font-medium text-slate-700">Participant Name</label>
+        <input type="text" id="editAthleteName" name="athleteName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+      <div class="mb-4">
+        <label for="editGender" class="block text-sm font-medium text-slate-700">Gender</label>
+        <select id="editGender" name="gender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="editHouseGroup" class="block text-sm font-medium text-slate-700">Team / House</label>
+        <select id="editHouseGroup" name="houseGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+          <option value="Mason">Mason</option>
+          <option value="Sheppard">Sheppard</option>
+          <option value="Sumner">Sumner</option>
+          <option value="Taylor">Taylor</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- Edit Result Modal -->
+<dialog id="editResultModal" class="modal p-0 rounded-lg shadow-xl max-w-md w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Enter Result</h3>
+    <p class="mb-4">Entering result for <strong id="editResultAthleteName"></strong>.</p>
+    <form id="editResultForm">
+      <input type="hidden" id="editResultParticipantId" name="participantId">
+      <div class="mb-6">
+        <label for="resultValue" class="block text-sm font-medium text-slate-700">Result</label>
+        <input type="number" step="any" id="resultValue" name="resultValue" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm" required>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+        <button type="submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Save Result</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<!-- CSV Upload / Mapping Modal -->
+<dialog id="csvUploadModal" class="modal p-0 rounded-lg shadow-xl max-w-2xl w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Import Participants from CSV</h3>
+    <p class="text-slate-600 mb-4">Map the columns from your CSV file to the required fields. Participants will be added to all events that match their Age Group.</p>
+    <div id="csvMapping" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label for="csvFirstName" class="block text-sm font-medium text-slate-700">First Name Column</label>
+        <select id="csvFirstName" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></select>
+      </div>
+      <div>
+        <label for="csvSurname" class="block text-sm font-medium text-slate-700">Surname Column</label>
+        <select id="csvSurname" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></select>
+      </div>
+      <div>
+        <label for="csvGender" class="block text-sm font-medium text-slate-700">Gender Column</label>
+        <select id="csvGender" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></select>
+      </div>
+      <div>
+        <label for="csvAgeGroup" class="block text-sm font-medium text-slate-700">Age Group Column</label>
+        <select id="csvAgeGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></select>
+      </div>
+      <div>
+        <label for="csvHouseGroup" class="block text-sm font-medium text-slate-700">Team / House Column</label>
+        <select id="csvHouseGroup" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm"></select>
+      </div>
+    </div>
+
+    <p class="text-sm font-medium text-slate-700 mb-2">Data Preview (first 5 rows)</p>
+    <div class="overflow-x-auto border rounded-lg">
+      <table class="w-full text-left">
+        <thead id="csvPreviewHead" class="bg-slate-50"></thead>
+        <tbody id="csvPreviewBody"></tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-6">
+      <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+      <button type="button" id="confirmCsvImport" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Confirm & Import</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Delete Confirmation Modal -->
+<dialog id="deleteConfirmModal" class="modal p-0 rounded-lg shadow-xl max-w-sm w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-2">Are you sure?</h3>
+    <p id="deleteConfirmText" class="text-slate-600 mb-6">This action cannot be undone.</p>
+    <div class="flex justify-end gap-3">
+      <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+      <button id="confirmDeleteBtn" class="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition">Delete</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Share Link Modal -->
+<dialog id="shareLinkModal" class="modal p-0 rounded-lg shadow-xl max-w-lg w-full">
+  <div class="modal-content bg-white p-6 rounded-lg">
+    <h3 class="text-xl font-bold mb-4">Share Link</h3>
+    <p id="shareLinkDescription" class="text-slate-600 mb-4"></p>
+    <input type="text" id="shareableLink" readonly class="w-full p-2 border rounded-md bg-slate-100">
+    <div class="flex justify-end gap-3 mt-4">
+      <button id="copyLinkBtn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Copy Link</button>
+      <button type="button" class="cancel-btn bg-slate-200 text-slate-800 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Close</button>
+    </div>
+  </div>
+</dialog>

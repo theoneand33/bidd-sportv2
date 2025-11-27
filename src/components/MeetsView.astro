@@ -1,0 +1,37 @@
+---
+/*
+  MeetsView.astro
+  Extracted presentational component for the "Competitions" (Meets) admin view.
+
+  Notes:
+  - Keeps the same DOM `id` attributes (`meetsView`, `meetsGrid`, `noMeetsMessage`, `addMeetBtn`)
+    so the existing client-side script continues to work without changes.
+  - Accepts optional props to customize title and the presence/text of the add button.
+*/
+const {
+  title = 'Competitions',
+  addButtonText = '+ Add Competition',
+  showAddButton = true
+} = Astro.props;
+---
+<div id="meetsView">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-semibold text-slate-800">{title}</h2>
+    {showAddButton ? (
+      <button id="addMeetBtn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition duration-200">
+        {addButtonText}
+      </button>
+    ) : null}
+  </div>
+
+  <p class="text-slate-500 mb-4 -mt-2">Select a competition to view its events or create a new one.</p>
+
+  <div id="meetsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Meet cards will be inserted here by client-side script -->
+  </div>
+
+  <div id="noMeetsMessage" class="hidden text-center py-16 bg-white rounded-lg shadow-sm">
+    <h3 class="text-xl font-medium text-slate-700">No competitions yet!</h3>
+    <p class="text-slate-500 mt-2">Click the "{addButtonText}" button to get started.</p>
+  </div>
+</div>
